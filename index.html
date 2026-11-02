@@ -52,7 +52,7 @@
         document.getElementById('linkBtn').addEventListener('click', (e) => {
             // Если устройство поддерживает официальный API, дублируем команду через него
             try {
-                tg.openTelegramLink("https://t.menejajak_srv_1_bot");
+                tg.openTelegramLink("https://t.me/nejajak_srv_1_bot");
                 setTimeout(() => { tg.close(); }, 300);
             } catch (err) {
                 // Если API на ПК выдало ошибку, сработает стандартный переход по тегу <a> с протоколом tg://
