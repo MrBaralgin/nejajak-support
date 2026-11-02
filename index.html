@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поддержка Nejajak</title>
-    <!-- ВАЖНО: Подключаем официальный скрипт Telegram Web App API -->
+    <!-- Официальный скрипт Telegram Web App API для ПК и телефонов -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -26,7 +26,10 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+            text-decoration: none;
+            display: inline-block;
             transition: transform 0.1s ease;
+            text-align: center;
         }
         .btn:active {
             transform: scale(0.96);
@@ -35,28 +38,27 @@
 </head>
 <body>
 
-    <button class="btn" id="startChat">Начать чат с поддержкой</button>
+    <!-- Железобетонный метод: используем внутренний протокол tg:// вместо https://t.me -->
+    <!-- Это заставляет само приложение Telegram на ПК и телефоне мгновенно открыть чат -->
+    <a href="tg://resolve?domain=nejajak_srv_1_bot" class="btn" id="linkBtn">Начать чат с поддержкой</a>
 
-	<script>
-		const tg = window.Telegram.WebApp;
-		tg.expand();
+    <script>
+        // Инициализируем WebApp на случай, если устройство поддерживает нативный метод
+        const tg = window.Telegram.WebApp;
+        if (tg) {
+            tg.expand(); // Разворачиваем окно на максимум
+        }
 
-		document.getElementById('startChat').addEventListener('click', () => {
-			const botLink = "https://t.me/nejajak_srv_1_bot";
-
-			try {
-				// Метод для мобильных и корректных ПК-клиентов
-				tg.openTelegramLink(botLink);
-			} catch (e) {
-				// Если ПК-версия выдала ошибку или проигнорировала метод — принудительный переход
-				window.location.href = botLink;
-			}
-
-			// Закрываем окно Mini App чуть позже, чтобы переход успел сработать
-			setTimeout(() => {
-				tg.close();
-			}, 300);
-		});
-	</script>
+        document.getElementById('linkBtn').addEventListener('click', (e) => {
+            // Если устройство поддерживает официальный API, дублируем команду через него
+            try {
+                tg.openTelegramLink("https://t.menejajak_srv_1_bot");
+                setTimeout(() => { tg.close(); }, 300);
+            } catch (err) {
+                // Если API на ПК выдало ошибку, сработает стандартный переход по тегу <a> с протоколом tg://
+                if (tg) { tg.close(); }
+            }
+        });
+    </script>
 </body>
 </html>
